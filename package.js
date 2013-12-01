@@ -24,8 +24,7 @@ Package.on_use(function (api, where){
     'templates.html',
     'collections.coffee',
     'helpers.coffee',
-    'controllers.coffee',
-    'themes/basic.styl'], 'client');
+    'controllers.coffee'], 'client');
 
   api.add_files([
     'modules/global.html',

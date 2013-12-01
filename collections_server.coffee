@@ -2,11 +2,12 @@
 _publish = (i) ->
   Vector.collections[i] = new Meteor.Collection i
   Meteor.publish "vector_#{i}", (docId) ->
+    check docId, Match.Optional(String)
     collections = []
-    userId = this.userId
+    userId = @userId
 
     if Vector.checkPermissions(userId,i)
-      collections.push Vector.collections[i].find()   
+      collections.push Vector.collections[i].find()
       if docId
         for ii,collectionName of Vector.resources[i].children
           if userId and Vector.checkPermissions(userId,collectionName)
@@ -37,9 +38,9 @@ for i,collection of Vector.resources
   else
     Vector.collections['accounts'] = Meteor.users
     Meteor.publish 'vector_accounts', ->
-      fields = {username:1,profile:1,emails:1}
+      fields = { username:1, profile:1, emails:1 }
       userId = this.userId
-      user = Meteor.users.findOne({_id:userId})
+      user = Meteor.users.findOne({ _id: userId })
       collections = []
 
       if userId and Vector.checkPermissions(user._id,'accounts')
@@ -59,7 +60,7 @@ for i,collection of Vector.resources
             ids = Vector.collections[i].findOne(_id:docId)["#{collectionName}_id"]
             if ids
               collections.push Vector.collections[collectionName].find({_id:{$in:ids}})
-              
+
       collections
 
     Meteor.users.allow
@@ -72,10 +73,6 @@ for i,collection of Vector.resources
       remove: (userId,doc) ->
         if Vector.checkPermissions(userId,'user') then true
         else if userId then doc._id is userId
-
-Accounts.config
-  sendVerificationEmail: Vector.privateSettings.sendVerificationEmail
-  forbidClientAccountCreation: Vector.privateSettings.forbidClientAccountCreation
 
 _users = Meteor.users.find({"profile.role":Vector.privateSettings.defaultAdminRole}).count()
 if _users is 0

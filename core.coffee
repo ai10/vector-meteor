@@ -6,7 +6,7 @@ instructions = "
 "
 
 
-defaultResources = 
+defaultResources =
   "dashboard": {
     "roles": ["guest", "administrator", "editor"],
     "pageFields": [
@@ -22,7 +22,7 @@ defaultResources =
     ]
   }
 
-defaultSettings = 
+defaultSettings =
   "adminRoot": "/admin",
   "defaultDocumentTitleKey": "title",
   "defaultDocumentTitle": "New document",
@@ -44,7 +44,7 @@ class _Vector
     @settings = _.extend defaultSettings, customSettings
     @collections = {}
     @subscriptionId = null
-  
+
   checkPermissions: (userId,collectionName,writePermission) ->
     if typeof userId is 'string'
       user = Meteor.users.findOne({_id:userId})

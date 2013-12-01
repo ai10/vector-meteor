@@ -11,6 +11,9 @@ Router.map ->
 
   @route 'vectorIndex',
     path: "#{adminRoot}"
+    yieldTemplates:
+        vectorNav:
+            to: 'navigation'
     before: ->
       for i,m of Vector.resources
         Router.go Router.path('vectorCollection',{collectionName:i})
@@ -18,8 +21,10 @@ Router.map ->
 
   @route 'vectorCollection',
     path: "#{adminRoot}/:collectionName"
-    layoutTemplate: 'vectorLayout'
-    before: ->
+    yieldTemplates:
+        navItems:
+            to: 'navItems'
+     before: ->
       unless Session.equals 'collectionName', @params.collectionName
         Session.set 'collectionName', @params.collectionName
         Session.set 'page', 1
@@ -46,7 +51,6 @@ Router.map ->
 
   @route 'vectorEdit',
     path: "#{adminRoot}/:collectionName/:_id"
-    layoutTemplate: 'vectorLayout'
     waitOn: ->
       Vector.subscriptionId = Meteor.subscribe "vector_" + @params.collectionName, @params._id
     before: ->
@@ -65,7 +69,7 @@ Router.map ->
       model = Vector.resources[@params.collectionName]
       collectionName = @params.collectionName
       pageFields: if model.pageFields then model.pageFields else null
-      collectionFields: if model.collectionFields then model.collectionFields else null 
+      collectionFields: if model.collectionFields then model.collectionFields else null
       collectionActions: if model.collectionActions then model.collectionActions else null
       collection: Vector.collections[collectionName].find({},
         sort: {created_at: -1},
@@ -81,7 +85,6 @@ Router.map ->
 
   @route 'vectorCollectionRelated',
     path: "#{adminRoot}/:collectionName/:_id/:relatedCollectionName"
-    layoutTemplate: 'vectorLayout'
     waitOn: ->
       Vector.subscriptionId = Meteor.subscribe "vector_" + @params.collectionName, @params._id
     before: ->
@@ -100,7 +103,7 @@ Router.map ->
       model = Vector.resources[@params.collectionName]
       collectionName = @params.relatedCollectionName
       pageFields: if model.pageFields then model.pageFields else null
-      collectionFields: if model.collectionFields then model.collectionFields else null 
+      collectionFields: if model.collectionFields then model.collectionFields else null
       collectionActions: if model.collectionActions then model.collectionActions else null
       collection: Vector.collections[collectionName].find({},
         sort: {created_at: -1},
